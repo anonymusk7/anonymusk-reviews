@@ -10,7 +10,7 @@ I used a new repo instead of a `/reviews/` folder on anonymusk-tools so it can't
 - `index.html`: hub, review cards, quick picks, CTA
 - `coingecko.html`, `dexscreener.html`, `tradingview.html`, `ledger.html`, `hetzner.html`: one review each (good for / skip it if / pros / cons / pricing / bottom line)
 - `disclosure.html`: affiliate disclosure and review policy
-- `sitemap.xml`, `robots.txt`, `.nojekyll`, `style.css`, `affiliates.js`
+- `404.html`, `sitemap.xml`, `robots.txt`, `.nojekyll`, `style.css`, `affiliates.js`, `og*.png`, `favicon.*`, `apple-touch-icon.png`, `logo.png`
 
 Every page has a CTA to the free tools (https://anonymusk7.github.io/anonymusk-tools/) and the DFY launch-video service (…/service.html).
 
@@ -20,19 +20,20 @@ Every page has a CTA to the free tools (https://anonymusk7.github.io/anonymusk-t
 - Cons include real public incidents (for example, Ledger's 2020 data breach, the 2023 Ledger Recover controversy and the Dec 2023 Connect Kit attack).
 - "Last reviewed October 2026." Re-check facts when you update.
 
-## Adding real affiliate links (one file)
+## Adding real affiliate links
 1. Join each program yourself (CoinGecko, DEX Screener, TradingView, Ledger, Hetzner referral or affiliate programs, where available) and copy your referral URL.
-2. Edit `site/affiliates.js` and replace each `REPLACE_ME_AFFILIATE` with the full `https://…` URL. Example: `ledger: "https://shop.ledger.com/?r=XXXX",`.
-3. `cd site && git commit -am "affiliate links" && git push`. Pages updates in about a minute.
+2. Preferred: edit `AFFILIATES` in `../build.py`, replace `REPLACE_ME_AFFILIATE` with the full `https://…` URL, run `python3 build.py`.
+   Quick alternative: edit `site/affiliates.js` directly (the JS upgrades the buttons at runtime). A later rebuild keeps any real `https://` link it finds there.
+3. `cd site && git add -A && git commit -m "affiliate links" && git push`. Pages updates in about a minute.
 
-Until a key is replaced, its buttons go to the plain official site with no tracking and show a yellow "placeholder: REPLACE_ME_AFFILIATE" tag. After you replace it, the button switches to your URL, gets `rel="sponsored nofollow"`, and the tag disappears.
-**Warning:** `../build.py` regenerates every page AND overwrites `affiliates.js` with placeholders. If you rebuild after adding real links, re-apply them (or move them into build.py first).
+While a key is still `REPLACE_ME_AFFILIATE`, its buttons are plain links to the official site: no tracking, no `rel="sponsored"`, and no placeholder text visible to visitors.
+With a real link, the buttons point to it with `rel="sponsored nofollow noopener"`, show "(affiliate link)", and the page's disclosure box says the buttons are affiliate links.
 
-Check what's left: `grep -n REPLACE_ME_AFFILIATE site/affiliates.js`
+Check what's left: `grep -n REPLACE_ME_AFFILIATE ../build.py site/affiliates.js`
 
 ## Editing / adding reviews
 Content lives in `build.py` (the `REVIEWS` list). Edit it, run `python3 build.py`, then commit and push from `site/`.
-`build.py` overwrites `affiliates.js`, so either copy your real links into the `AFF_JS` block in `build.py` or don't rebuild after you edit links by hand.
+`build.py` also generates the og share cards (`og.png`, `og-<slug>.png`, 1200×630, PIL), favicons, `404.html`, JSON-LD and the sitemap (per-page `lastmod` from `MATCH[...]['updated']` / `HOME_UPDATED` / `DISC_UPDATED`). Gumroad cross-sells and free-tool links per review live in `PRODUCTS`, `FREE` and `MATCH`.
 Smoke test: `NODE_PATH=/tmp/pt/node_modules node e2e.js` loads every page, counts affiliate buttons and screenshots index and Ledger.
 
 ## Still needs you
