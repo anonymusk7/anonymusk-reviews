@@ -26,6 +26,8 @@ Every page has a CTA to the free tools (https://anonymusk7.github.io/anonymusk-t
 3. `cd site && git commit -am "affiliate links" && git push`. Pages updates in about a minute.
 
 Until a key is replaced, its buttons go to the plain official site with no tracking and show a yellow "placeholder: REPLACE_ME_AFFILIATE" tag. After you replace it, the button switches to your URL, gets `rel="sponsored nofollow"`, and the tag disappears.
+**Warning:** `../build.py` regenerates every page AND overwrites `affiliates.js` with placeholders. If you rebuild after adding real links, re-apply them (or move them into build.py first).
+
 Check what's left: `grep -n REPLACE_ME_AFFILIATE site/affiliates.js`
 
 ## Editing / adding reviews
